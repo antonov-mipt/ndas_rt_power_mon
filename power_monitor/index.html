@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Power monitor</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+</head>
+
+<body onload="request_state()">
+    <b>Power monitor Web UI</b><br>
+    <br>
+    
+    <b>Errors:</b> 
+    <span id="errors"></span><br>
+    <br>
+    
+    <b>Current voltage:</b> 
+    <span id="curr_voltage"></span> (<span id="curr state"></span>)<br>
+    <br>
+    
+    <b>Settings:</b><br>
+    Connection: 
+    <input type="text_" id="ip" size = 20/>
+    <input type="text_" id="port" size = 10/> <br>
+    Stream and channel: 
+    <input type="text_" id="stream" size = 10/>
+    <input type="text_" id="channel" size = 10/> <br>
+    Threshold: 
+    <input type="text_" id="threshold" size = 10/> Volts <br>
+    Hysteresis:
+    <input type="text_" id="hysteresis" size = 10/> Volts <br>
+    Phone number: 
+    <input type="text_" id="phone_number" size = 20/><br>
+    Low level msg:
+    <input type="text_" id="low_msg" size = 40/><br>
+    High level msg:
+    <input type="text_" id="high_msg" size = 40/><br>
+    <br>
+    <input type="button" id="apply_button" value = "Apply changes" onclick="send_config()" /><br><br>
+    
+    
+<script type="text/javascript">
+
+var config_loaded = false;
+
+function send_config()
+{
+    var data = {"cmd":"set_config","config":{
+        "ip":document.getElementById("ip").value,
+        "port":document.getElementById("port").value,
+        "stream":document.getElementById("stream").value,
+        "channel":document.getElementById("channel").value,
+        "threshold":parseFloat(document.getElementById("threshold").value),
+        "hysteresis":parseFloat(document.getElementById("hysteresis").value),
+        "phone_number":document.getElementById("phone_number").value,
+        "low_msg":document.getElementById("low_msg").value,
+        "high_msg":document.getElementById("high_msg").value
+    }};
+	var xhr = new XMLHttpRequest();
+    xhr.open("POST", "cmd.json?rnd=" + Math.floor(Math.random() * 10000), true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(data)); 
+    config_loaded = false;
+    document.getElementById("apply_button").value = 'OK'
+}
+
+function update_state(response)
+{
+    if(response['error'] == false)
+    {
+        var new_state = response['result'];
+        if(new_state["errors"].length > 0)
+        {
+            document.getElementById("errors").innerHTML = new_state["errors"].toString();
+            document.getElementById("errors").style = "color:Red;"
+        }
+        else
+        {
+            document.getElementById("errors").innerHTML = "No errors";
+            document.getElementById("errors").style = "color:Green;"
+        }
+        
+        if(config_loaded == false)
+        {
+            let cfg = new_state["config"]
+            document.getElementById("ip").value = cfg["ip"];
+            document.getElementById("port").value = cfg["port"];
+            document.getElementById("stream").value = cfg["stream"];
+            document.getElementById("channel").value = cfg["channel"];
+            document.getElementById("threshold").value = cfg["threshold"];
+            document.getElementById("hysteresis").value = cfg["hysteresis"];
+            document.getElementById("phone_number").value = cfg["phone_number"];
+            document.getElementById("low_msg").value = cfg["low_msg"];
+            document.getElementById("high_msg").value = cfg["high_msg"];
+            document.getElementById("apply_button").value = 'Apply changes'
+            config_loaded = true;
+        }
+        
+        let v = (Math.round(new_state['status']['curr_voltage']*100)/100).toString();
+        document.getElementById("curr_voltage").innerHTML = v + ' Volts';
+        document.getElementById("curr state").innerHTML = new_state['status']['curr_state'];
+    }
+}
+
+function request_state()
+{
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () { if(xhr.status == 200) update_state(xhr.response); };
+    xhr.open("GET", "state.json?rnd=" + Math.floor(Math.random() * 10000), true);
+    xhr.responseType = "json";
+    xhr.send(); 
+    setTimeout("request_state()", 1000);
+}
+
+</script>
+</body>
+</html>

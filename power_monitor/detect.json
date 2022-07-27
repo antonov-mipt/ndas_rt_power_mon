@@ -1,0 +1,7 @@
+{
+    "class": "int_sw_module",
+    "enabled": true,
+    "name": "Power monitor",
+    "path": "power_monitor/power_mon.py",
+    "visible": true
+}
