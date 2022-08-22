@@ -28,8 +28,12 @@
     <input type="text_" id="threshold" size = 10/> Volts <br>
     Hysteresis:
     <input type="text_" id="hysteresis" size = 10/> Volts <br>
-    Phone number: 
-    <input type="text_" id="phone_number" size = 20/><br>
+    Phone number 1: 
+    <input type="text_" id="phone_number_1" size = 20/><br>
+    Phone number 2: 
+    <input type="text_" id="phone_number_2" size = 20/><br>
+    Phone number 3: 
+    <input type="text_" id="phone_number_3" size = 20/><br>
     Low level msg:
     <input type="text_" id="low_msg" size = 40/><br>
     High level msg:
@@ -51,7 +55,9 @@ function send_config()
         "channel":document.getElementById("channel").value,
         "threshold":parseFloat(document.getElementById("threshold").value),
         "hysteresis":parseFloat(document.getElementById("hysteresis").value),
-        "phone_number":document.getElementById("phone_number").value,
+        "phone_number_1":document.getElementById("phone_number_1").value,
+        "phone_number_2":document.getElementById("phone_number_2").value,
+        "phone_number_3":document.getElementById("phone_number_3").value,
         "low_msg":document.getElementById("low_msg").value,
         "high_msg":document.getElementById("high_msg").value
     }};
@@ -88,7 +94,9 @@ function update_state(response)
             document.getElementById("channel").value = cfg["channel"];
             document.getElementById("threshold").value = cfg["threshold"];
             document.getElementById("hysteresis").value = cfg["hysteresis"];
-            document.getElementById("phone_number").value = cfg["phone_number"];
+            document.getElementById("phone_number_1").value = cfg["phone_number_1"];
+            document.getElementById("phone_number_2").value = cfg["phone_number_2"];
+            document.getElementById("phone_number_3").value = cfg["phone_number_3"];
             document.getElementById("low_msg").value = cfg["low_msg"];
             document.getElementById("high_msg").value = cfg["high_msg"];
             document.getElementById("apply_button").value = 'Apply changes'

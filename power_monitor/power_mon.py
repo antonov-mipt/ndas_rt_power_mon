@@ -25,7 +25,9 @@ class MAIN_MODULE_CLASS(COMMON_MAIN_MODULE_CLASS):
                 'channel':'ch1',
                 'threshold':3.5,
                 'hysteresis':0.5,
-                'phone_number':'+79262711587',
+                'phone_number_1':'',
+                'phone_number_2':'',
+                'phone_number_3':'',
                 'low_msg': 'Voltage dropped below threshold',
                 'high_msg': 'Voltage raised above threshold'
             }}
@@ -123,22 +125,30 @@ class MAIN_MODULE_CLASS(COMMON_MAIN_MODULE_CLASS):
             if v > high: self.curr_state = 'High?'
             elif v < low:
                 self.curr_state = 'Low'
-                number = self.config.cfg['phone_number']
+                number1 = self.config.cfg['phone_number_1']
+                number2 = self.config.cfg['phone_number_2']
+                number3 = self.config.cfg['phone_number_3']
                 msg = self.config.cfg['low_msg']
                 now = datetime.now().strftime('%Y/%m/%d %T ')
                 self.logger.warning(msg)
-                self.trigger.sms(number, now + msg)
+                if number1 != '': self.trigger.sms(number1, now + msg)
+                if number2 != '': self.trigger.sms(number2, now + msg)
+                if number3 != '': self.trigger.sms(number3, now + msg)
                 self.trigger.fire()
             
         elif self.curr_state == 'High?':
             if v < low: self.curr_state = 'Low?'
             elif v > high: 
                 self.curr_state = 'High'
-                number = self.config.cfg['phone_number']
+                number1 = self.config.cfg['phone_number_1']
+                number2 = self.config.cfg['phone_number_2']
+                number3 = self.config.cfg['phone_number_3']
                 msg = self.config.cfg['high_msg']
                 now = datetime.now().strftime("%Y/%m/%d %T ")
                 self.logger.warning(msg)
-                self.trigger.sms(number, now + msg)
+                if number1 != '': self.trigger.sms(number1, now + msg)
+                if number2 != '': self.trigger.sms(number2, now + msg)
+                if number3 != '': self.trigger.sms(number3, now + msg)
                 self.trigger.fire()
             
         elif self.curr_state == 'Low':
